@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>重信风控</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <script src="js/common.js"></script>
+    <link rel="stylesheet" href="css/base.css"/>
+    <link rel="stylesheet" href="css/consume-record.css">
+    <link rel="stylesheet" href="LCalendar/css/LCalendar.css">
+</head>
+<body style="background: #F7F7F7">
+<div class="consume-box">
+    <div>
+        <a class="back" href=""></a>
+        消费记录
+    </div>
+    <div>
+        <h5><span></span>消费时间</h5>
+        <div class="time-line">
+            <input name="start_date" id="start_date" class="left" type="text" readonly="readonly">
+            <span class="left">至</span>
+            <input name="end_date" id="end_date" class="right" type="text" readonly>
+        </div>
+        <ul class="time-frame">
+            <li class="active"><span></span>最近一周</li>
+            <li><span></span>最近一月</li>
+            <li><span></span>最近三月</li>
+        </ul>
+    </div>
+    <button class="search" type="button">立即搜索</button>
+
+
+
+</div>
+</body>
+<script src="js/jquery-1.11.3.js"></script>
+<script src="LCalendar/js/LCalendar.js"></script>
+<script>
+    $(".time-frame li").on("click",function(){
+        if(!($(this).hasClass("active"))){
+            $(this).addClass("active");
+            $(this).siblings("li").removeClass("active");
+        }
+    });
+
+
+//日期选择
+    var calendar = new LCalendar();
+    calendar.init({
+        'trigger': '#start_date', //标签id
+        'type': 'date', //date 调出日期选择 datetime 调出日期时间选择 time 调出时间选择 ym 调出年月选择,
+        'minDate': (new Date().getFullYear()-10) + '-' + 1 + '-' + 1, //最小日期
+        'maxDate': (new Date().getFullYear()+50) + '-' + 12 + '-' + 31 //最大日期
+    });
+    var calendar = new LCalendar();
+    calendar.init({
+        'trigger': '#end_date', //标签id
+        'type': 'date', //date 调出日期选择 datetime 调出日期时间选择 time 调出时间选择 ym 调出年月选择,
+        'minDate': (new Date().getFullYear()-10) + '-' + 1 + '-' + 1, //最小日期
+        'maxDate': (new Date().getFullYear()+50) + '-' + 12 + '-' + 31 //最大日期
+    });
+
+
+
+</script>
+</html>

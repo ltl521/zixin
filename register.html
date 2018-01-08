@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <script src="js/common.js"></script>
+    <link rel="stylesheet" href="css/base.css"/>
+    <link rel="stylesheet" href="css/register.css">
+</head>
+<body>
+<div class="register-box">
+    <div class="logo"></div>
+    <div class="logo2"></div>
+    <form class="register-form" action="">
+        <div class="line phone">
+            <span></span>
+            <input type="text" id="phone" placeholder="请输入手机号">
+        </div>
+        <div class="line yzm">
+            <span></span>
+            <input type="text" id="yzm" placeholder="请输入验证码">
+            <img class="yzm-pic" src="images/yan.png" alt="">
+        </div>
+        <div class="line msgyzm">
+            <span></span>
+            <input type="text" id="msgyzm" placeholder="请输入短信验证码">
+            <button class="send-code" type="button">发送验证码</button>
+        </div>
+        <div class="line pwd">
+            <span></span>
+            <input type="password" id="pwd" placeholder="请输入密码">
+        </div>
+        <div class="read-box">
+            <span class="read"></span>
+            <p>我已阅读并同意 <a class="agreement" href="">《重信风控服务协议》</a></p>
+        </div>
+        <button type="button" class="register">立刻注册</button>
+        <p>已有账号，直接<a href="">登录</a></p>
+        <!--错误提示-->
+        <div class="modal">
+            <div class="modal-content"></div>
+        </div>
+    </form>
+</div>
+</body>
+<script src="js/jquery-1.11.3.js"></script>
+<script>
+    $(".read").on("click",function(){
+        if($(this).hasClass("read-active")){
+            $(this).removeClass("read-active")
+        }else{
+            $(this).addClass("read-active")
+        }
+    });
+
+    /*错误提示展示*/
+    function showModal(str) {
+        $('.modal').show();
+        $('.modal-content').html(str);
+        var timer = setTimeout(function () {
+            $('.modal').hide();
+            timer = null;
+        }, 1000)
+    }
+</script>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>重信风控</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <script src="js/common.js"></script>
+    <link rel="stylesheet" href="css/base.css"/>
+    <link rel="stylesheet" href="css/forget-password.css">
+</head>
+<body style="background: #F7F7F7">
+<div class="forget-pwd-box">
+    <div>
+        <a class="back" href=""></a>
+        修改手机号
+    </div>
+    <div>
+        <div class="line new-phone">
+            <span class="phone-pic"></span>
+            <p>18521759829</p>
+        </div>
+        <div class="line yzm">
+            <span class="message-pic"></span>
+            <input type="text" placeholder="请输入验证码">
+            <button type="button" class="get-yzm">获取验证码</button>
+        </div>
+    </div>
+    <button class="next-btn" type="button">下一步</button>
+    <!--错误提示-->
+    <div class="modal">
+        <div class="modal-content">dfgsdfgsgfsegfsdfg</div>
+    </div>
+</div>
+</body>
+<script src="js/jquery-1.11.3.js"></script>
+<script>
+//获取验证码
+    function codwn() {
+        var time=60;
+        var show=$(".get-yzm")[0];
+        $(show).attr('disabled','true');
+        $(show).addClass("num");
+        show.innerHTML=time+"s";
+        var init = setInterval(function () {
+            time--;
+            if(time>0){
+                $(show).attr('disabled','true');
+                show.innerHTML=time+"s";
+            }else{
+                clearInterval(init);
+                show.innerHTML='重新获取';
+                $(show).removeAttr('disabled');
+                $(show).removeClass("num");
+                time=60;
+            }
+
+        },1000)
+    }
+    $(".get-yzm").on("click",codwn);
+
+
+    /*错误提示展示*/
+    function showModal(str) {
+        $('.modal').show();
+        $('.modal-content').html(str);
+        var timer = setTimeout(function () {
+            $('.modal').hide();
+            timer = null;
+        }, 1000)
+    }
+
+
+    $(".next-btn").on("click",function(){
+        location.href="modify-phone.html"
+    })
+
+</script>
+</html>

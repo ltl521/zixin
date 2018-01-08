@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>重信风控</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <script src="js/common.js"></script>
+    <link rel="stylesheet" href="css/base.css"/>
+    <link rel="stylesheet" href="css/qualification.css">
+</head>
+<body style="background: #F7F7F7">
+<div class="qualification-box">
+    <div>
+        <a class="back" href=""></a>
+        资质认证
+    </div>
+    <form class="qualification-form" action="">
+        <div>
+            <div class="line">
+                <span>企业名称：</span>
+                <input type="text" placeholder="请输入企业名称">
+            </div>
+            <div class="line">
+                <span>负责人姓名：</span>
+                <input type="text" placeholder="请输入负责人姓名">
+            </div>
+            <div class="line">
+                <span>联系方式:</span>
+                <input type="text" placeholder="请选择联系方式">
+            </div>
+            <div class="line">
+                <span>营业执照号码：</span>
+                <input type="text" placeholder="营业执照号码">
+            </div>
+            <div class="line">
+                <span>上传营业执照：</span>
+                <div class="picture">
+                    <img class="add" src="images/addimage.png" alt="">
+                    <span class="cha" style="display:none"></span>
+                    <img class="jt" src="" alt="">
+                    <input id="file" runat="server" type="file" accept="image/*"/>
+                    <canvas style="display: none"></canvas>
+                </div>
+
+            </div>
+        </div>
+        <button class="submit" type="button">提交</button>
+    </form>
+</div>
+</body>
+<script src="js/jquery-1.11.3.js"></script>
+<script src="js/exif.js"></script>
+<script>
+    /*$(".picture img").on("click",function(){
+     $('#file').replaceWith('<input id="file" runat="server" type="file" accept="image/!*" capture="camera" style="width:100%; display:none" />');
+     $("#file").click();
+     $("#file").off("change").on("change",function(){
+     var file = this.files[0];  //文件对象
+     var url=window.URL.createObjectURL(this.files[0]);
+     $(".picture img").attr("src",url);
+     $(".cha").show();
+     })
+     });*/
+
+
+    var   Orientation;
+    //显示选择图片
+    $("#file").on("change",function(){
+        var url;
+        $(this).siblings('.jt').css('display','inline-block');
+        $(this).siblings('.add').remove();
+        var Cnv =$(this).siblings('canvas')[0];
+        var Cntx = Cnv.getContext('2d');//获取2d编辑容器
+        var imgss =   new Image();
+        var agoimg= $(this).siblings('.jt')[0];
+        var tmpFile = this.files[0];
+        var reader = new FileReader();
+        EXIF.getData(tmpFile, function() {
+            // alert(EXIF.pretty(this));
+            EXIF.getAllTags(this);
+            //alert(EXIF.getTag(this, 'Orientation'));
+            Orientation = EXIF.getTag(this, 'Orientation');
+        });
+        //return;
+        reader.readAsDataURL(tmpFile);
+        reader.onload = function (e) {
+            url = e.target.result;
+            imgss.src = url;
+            agoimg.src=url;
+            imgss.onload = function () {
+//等比缩放
+                var m = imgss.width / imgss.height;
+                Cnv.width =300;//该值影响缩放后图片的大小
+                Cnv.width= 300/m ;
+//img放入画布中
+//设置起始坐标，结束坐标
+
+                Cntx.drawImage(agoimg, 0, 0,300,300/m);
+                $(".cha").show();
+                //修复ios
+                if (navigator.userAgent.match(/iphone/i)) {
+
+                    //alert(expectWidth + ',' + expectHeight);
+                    //如果方向角不为1，都需要进行旋转 added by lzk
+                    if(Orientation != "" && Orientation != 1){
+
+                        switch(Orientation){
+                            case 6://需要顺时针（向左）90度旋转
+
+                                rotateImg(this,'left',Cnv);
+                                break;
+                            case 8://需要逆时针（向右）90度旋转
+
+                                rotateImg(this,'right',Cnv);
+                                break;
+                            case 3://需要180度旋转
+
+                                rotateImg(this,'right',Cnv);//转两次
+                                rotateImg(this,'right',Cnv);
+                                break;
+                        }
+                    }
+
+//img放入画布中
+//设置起始坐标，结束坐标
+
+                }
+
+
+            }
+        };
+    })
+
+    /*Blob兼容写法*/
+    function getBlob(buffer, format) {
+        try {
+            return new Blob(buffer, {type: format});
+        } catch (e) {
+            var bb = new (window.BlobBuilder || window.WebKitBlobBuilder || window.MSBlobBuilder);
+            buffer.forEach(function(buf) {
+                bb.append(buf);
+            });
+            return bb.getBlob(format);
+        }
+    }
+    /*返回blob 对象*/
+    function  returnBold(id) {
+        var Pic = $(document.getElementById(id)).siblings('canvas')[0].toDataURL("image/png");
+
+        var text = window.atob(Pic.split(",")[1]);
+        var buffer = new Uint8Array(text.length);
+        for (var i = 0; i < text.length; i++) {
+            buffer[i] = text.charCodeAt(i);
+        }
+        var type= document.getElementById(id).files.type;
+        var blob = getBlob([buffer], type);
+        return blob
+    }
+    /*旋转图像*/
+    function rotateImg(img, direction,canvas) {
+        //alert(img);
+        //最小与最大旋转方向，图片旋转4次后回到原方向
+        var min_step = 0;
+        var max_step = 3;
+        //var img = document.getElementById(pid);
+        if (img == null)return;
+        //img的高度和宽度不能在img元素隐藏后获取，否则会出错
+        var m = img.width / img.height;
+        var height = 300;
+        var width = 300*m;
+        //var step = img.getAttribute('step');
+        var step = 2;
+        if (step == null) {
+            step = min_step;
+        }
+        if (direction == 'right') {
+            step++;
+            //旋转到原位置，即超过最大值
+            step > max_step && (step = min_step);
+        } else {
+            step--;
+            step < min_step && (step = max_step);
+        }
+        //img.setAttribute('step', step);
+        /*var canvas = document.getElementById('pic_' + pid);
+         if (canvas == null) {
+         img.style.display = 'none';
+         canvas = document.createElement('canvas');
+         canvas.setAttribute('id', 'pic_' + pid);
+         img.parentNode.appendChild(canvas);
+         }  */
+        //旋转角度以弧度值为参数
+        var degree = step * 90 * Math.PI / 180;
+        var ctx = canvas.getContext('2d');
+        switch (step) {
+            case 0:
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0);
+                break;
+            case 1:
+                canvas.width = height;
+                canvas.height = width;
+                ctx.rotate(degree);
+                ctx.drawImage(img, 0, -height,width,height);
+                break;
+            case 2:
+                canvas.width = width;
+                canvas.height = height;
+                ctx.rotate(degree);
+                ctx.drawImage(img, -width, -height,width,height);
+                break;
+            case 3:
+                canvas.width = height;
+                canvas.height = width;
+                ctx.rotate(degree);
+                ctx.drawImage(img, -width, 0,width,height);
+                break;
+        }
+    }
+
+    $(".cha").on("click",function(){
+        $(".picture img").attr("src","images/addimage.png");
+        $(this).hide();
+    });
+    $(".submit").on("click",function(){
+        /*ajax*/
+        var formData = new FormData();
+        formData.append('file',returnBold('file'));
+    })
+</script>
+</html>

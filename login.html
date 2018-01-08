@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <script src="js/common.js"></script>
+    <link rel="stylesheet" href="css/base.css"/>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+<div class="login-box">
+    <div class="logo"></div>
+    <div class="logo2"></div>
+    <form class="login-form" action="">
+        <div class="line user">
+            <span></span>
+            <input type="text" id="user" placeholder="请输入手机号">
+        </div>
+        <div class="line pwd">
+            <span></span>
+            <input type="password" id="pwd" placeholder="请输入密码">
+        </div>
+        <div class="jizhu">
+            <span class="jzmima"></span>
+            <a>记住密码</a>
+        </div>
+        <button type="button" class="login">立刻登录</button>
+        <div class="zc">
+            <a class="forget-pwd left" href="">忘记密码？</a>
+            <a class="signup right" href="">新用户注册</a>
+        </div>
+        <!--错误提示-->
+        <div class="modal">
+            <div class="modal-content"></div>
+        </div>
+    </form>
+</div>
+</body>
+<script src="js/jquery-1.11.3.js"></script>
+<script>
+    $(".jizhu").on("click",function(){
+        if($(".jzmima").hasClass("jzmima-active")){
+            $(".jzmima").removeClass("jzmima-active")
+        }else{
+            $(".jzmima").addClass("jzmima-active")
+        }
+    })
+
+
+    /*错误提示展示*/
+    function showModal(str) {
+        $('.modal').show();
+        $('.modal-content').html(str);
+        var timer = setTimeout(function () {
+            $('.modal').hide();
+            timer = null;
+        }, 1000)
+    }
+</script>
+</html>
